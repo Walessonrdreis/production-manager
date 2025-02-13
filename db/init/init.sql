@@ -1,1 +1,12 @@
--- Script para inicializar o banco de dados
+-- Script de inicialização do MySQL para o projeto
+CREATE DATABASE IF NOT EXISTS project_db;
+USE project_db;
+
+-- Criação de tabela exemplo: usuarios
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
