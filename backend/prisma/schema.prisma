@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  name      String
+  password  String
+  role      UserRole  @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Product {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  sku         String    @unique
+  price       Float
+  stock       Int       @default(0)
+  minStock    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  productionOrders ProductionOrder[]
+  materials        ProductMaterial[]
+
+  @@map("products")
+}
+
+model Material {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  sku         String    @unique
+  stock       Int       @default(0)
+  minStock    Int       @default(0)
+  unit        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products ProductMaterial[]
+
+  @@map("materials")
+}
+
+model ProductMaterial {
+  id          String    @id @default(uuid())
+  productId   String
+  materialId  String
+  quantity    Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  product     Product   @relation(fields: [productId], references: [id])
+  material    Material  @relation(fields: [materialId], references: [id])
+
+  @@map("product_materials")
+}
+
+model ProductionOrder {
+  id          String             @id @default(uuid())
+  productId   String
+  quantity    Int
+  status      ProductionStatus   @default(PENDING)
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  product     Product           @relation(fields: [productId], references: [id])
+
+  @@map("production_orders")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  USER
+}
+
+enum ProductionStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+} 
