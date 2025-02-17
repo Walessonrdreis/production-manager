@@ -1,51 +1,51 @@
-# Build stage
-FROM node:18-alpine AS builder
+# Imagem de dependências
+FROM node:18-alpine AS deps
 
 # Instalar dependências necessárias
 RUN apk add --no-cache python3 make g++ openssl
 
-# Diretório de trabalho
 WORKDIR /app
 
-# Copiar arquivos de dependências
+# Copiar apenas os arquivos necessários para instalação de dependências
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Instalar todas as dependências (incluindo devDependencies)
+# Instalar dependências com cache
 RUN npm ci
 
-# Copiar o resto do código
+# Build stage
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+# Copiar dependências da etapa anterior
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Gerar o cliente do Prisma
-RUN npx prisma generate
-
-# Compilar TypeScript
-RUN npm run build
+# Gerar o cliente do Prisma e compilar TypeScript
+RUN npx prisma generate && npm run build
 
 # Production stage
-FROM node:18-alpine
+FROM node:18-alpine AS runner
 
-# Instalar OpenSSL para o Prisma
+# Instalar apenas o OpenSSL necessário para o Prisma
 RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-# Copiar package.json e package-lock.json
-COPY package*.json ./
+ENV NODE_ENV production
 
-# Instalar apenas as dependências de produção
-RUN npm ci --only=production
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 appuser
 
-# Copiar o Prisma schema e o cliente gerado
-COPY prisma ./prisma/
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-
-# Copiar os arquivos compilados
+# Copiar apenas os arquivos necessários para produção
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json ./
 
-# Expor porta
+USER appuser
+
 EXPOSE 3000
 
-# Comando para iniciar a aplicação
 CMD ["npm", "run", "start"] 

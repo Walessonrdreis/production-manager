@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      target: deps # Para desenvolvimento, paramos no estágio de deps
+    command: yarn dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Volume anônimo para node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+
+  backend:
+    build:
+      context: ./backend
+      target: deps # Para desenvolvimento, paramos no estágio de deps
+    command: npm run dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules # Volume anônimo para node_modules
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=development 
