@@ -11,3 +11,44 @@
 
 #!.yarn/cache
 .pnp.*
+
+# Dependências
+node_modules/
+/vendor/
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+
+# Arquivos de build/dist
+/dist/
+/build/
+/out/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs e editores
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Arquivos de cache
+.cache/
+.npm/
+.eslintcache
+
+# Arquivos de teste
+/coverage/
+
+# Arquivos temporários
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
