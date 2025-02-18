@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 import './UserProfile.css';
@@ -12,6 +13,7 @@ interface UserProfileData {
 }
 
 export const UserProfile: React.FC = () => {
+  const navigate = useNavigate();
   const { user: authUser } = useAuth();
   const [profileData, setProfileData] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,21 +37,36 @@ export const UserProfile: React.FC = () => {
     fetchProfile();
   }, []);
 
+  const handleVoltar = () => {
+    navigate('/dashboard');
+  };
+
   if (loading) {
     return <div className="profile-loading">Carregando perfil...</div>;
   }
 
   if (error) {
-    return <div className="profile-error">Erro: {error}</div>;
+    return (
+      <div className="profile-error">
+        <p>Erro: {error}</p>
+        <button onClick={handleVoltar} className="back-button">Voltar para Home</button>
+      </div>
+    );
   }
 
   if (!profileData) {
-    return <div className="profile-error">Dados do perfil não encontrados</div>;
+    return (
+      <div className="profile-error">
+        <p>Dados do perfil não encontrados</p>
+        <button onClick={handleVoltar} className="back-button">Voltar para Home</button>
+      </div>
+    );
   }
 
   return (
     <div className="profile-container">
       <div className="profile-header">
+        <button onClick={handleVoltar} className="back-button">← Voltar</button>
         <h2>Perfil do Usuário</h2>
       </div>
       

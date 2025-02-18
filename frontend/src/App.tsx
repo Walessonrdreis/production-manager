@@ -7,9 +7,10 @@ import { IndexPage } from './pages/IndexPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { HomePage } from './pages/HomePage';
+import { UserProfile } from './pages/UserProfile';
 import { AuthProvider } from './contexts/AuthContext';
 import { PrivateRoute } from './routes/PrivateRoute';
-import { UserProfile } from './pages/UserProfile';
+import { Layout } from './components/Layout';
 
 function App() {
   return (
@@ -26,37 +27,51 @@ function App() {
             {/* Rotas Privadas */}
             <Route path="/dashboard" element={
               <PrivateRoute>
-                <HomePage />
+                <Layout>
+                  <HomePage />
+                </Layout>
               </PrivateRoute>
             } />
             <Route path="/profile" element={
               <PrivateRoute>
-                <UserProfile />
+                <Layout>
+                  <UserProfile />
+                </Layout>
               </PrivateRoute>
             } />
             <Route path="/products" element={
               <PrivateRoute>
-                <HomePage />
+                <Layout>
+                  <HomePage />
+                </Layout>
               </PrivateRoute>
             } />
             <Route path="/orders" element={
               <PrivateRoute>
-                <HomePage />
+                <Layout>
+                  <HomePage />
+                </Layout>
               </PrivateRoute>
             } />
             <Route path="/customers" element={
               <PrivateRoute>
-                <HomePage />
+                <Layout>
+                  <HomePage />
+                </Layout>
               </PrivateRoute>
             } />
             <Route path="/reports" element={
               <PrivateRoute>
-                <HomePage />
+                <Layout>
+                  <HomePage />
+                </Layout>
               </PrivateRoute>
             } />
             <Route path="/settings" element={
               <PrivateRoute>
-                <HomePage />
+                <Layout>
+                  <HomePage />
+                </Layout>
               </PrivateRoute>
             } />
 
