@@ -1,1 +1,67 @@
- 
+.index-page-container {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.header-animation {
+  animation: slideDown 0.8s ease-out;
+}
+
+.content-animation {
+  animation: slideUp 0.8s ease-out;
+}
+
+/* Efeito de hover nos botões */
+.button-hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Estilos responsivos adicionais */
+@media (max-width: 768px) {
+  .index-page-container {
+    padding: 16px;
+  }
+}
+
+/* Estilos de acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  .index-page-container,
+  .header-animation,
+  .content-animation,
+  .button-hover-effect {
+    animation: none;
+    transform: none;
+  }
+}
