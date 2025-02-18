@@ -51,61 +51,52 @@ const logError = (err, req) => {
 
 // Middleware principal de tratamento de erros
 const errorHandler = (err, req, res, next) => {
-  // Log do erro
-  logError(err, req);
+  console.error(err.stack);
 
-  // Tratamento específico por tipo de erro
-  if (err instanceof ValidationError) {
-    return res.status(err.statusCode).json({
-      status: 'error',
-      code: err.statusCode,
-      message: err.message,
-      errors: err.errors,
-    });
-  }
-
-  if (err instanceof DatabaseError) {
-    return res.status(err.statusCode).json({
-      status: 'error',
-      code: err.statusCode,
-      message: 'Erro no banco de dados. Por favor, tente novamente mais tarde.',
-      ...(process.env.NODE_ENV === 'development' && { detail: err.message }),
-    });
-  }
-
-  if (err instanceof ApiError) {
-    return res.status(err.statusCode).json({
-      status: 'error',
-      code: err.statusCode,
-      message: err.message,
-    });
-  }
-
-  // Tratamento de erros do Sequelize
+  // Erros de validação do Sequelize
   if (err.name === 'SequelizeValidationError') {
     return res.status(400).json({
-      status: 'error',
-      code: 400,
-      message: 'Erro de validação',
-      errors: err.errors.map(e => ({
-        field: e.path,
-        message: e.message,
-      })),
+      error: 'Erro de validação',
+      details: err.errors.map(e => e.message)
     });
   }
 
-  // Erro padrão para casos não tratados
-  const statusCode = err.statusCode || 500;
-  const errorResponse = {
-    status: 'error',
-    code: statusCode,
-    message: process.env.NODE_ENV === 'production' 
-      ? 'Erro interno do servidor' 
-      : err.message || 'Erro interno do servidor',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
-  };
+  // Erros de chave única do Sequelize
+  if (err.name === 'SequelizeUniqueConstraintError') {
+    return res.status(400).json({
+      error: 'Erro de duplicidade',
+      details: 'Já existe um registro com estes dados.'
+    });
+  }
 
-  res.status(statusCode).json(errorResponse);
+  // Erros de banco de dados do Sequelize
+  if (err.name === 'SequelizeDatabaseError') {
+    return res.status(500).json({
+      error: 'Erro no banco de dados',
+      details: 'Ocorreu um erro ao processar sua requisição.'
+    });
+  }
+
+  // Erros de JWT
+  if (err.name === 'JsonWebTokenError') {
+    return res.status(401).json({
+      error: 'Token inválido',
+      details: 'O token de autenticação fornecido é inválido.'
+    });
+  }
+
+  if (err.name === 'TokenExpiredError') {
+    return res.status(401).json({
+      error: 'Token expirado',
+      details: 'O token de autenticação expirou. Faça login novamente.'
+    });
+  }
+
+  // Erro padrão
+  return res.status(500).json({
+    error: 'Erro interno do servidor',
+    details: process.env.NODE_ENV === 'development' ? err.message : 'Ocorreu um erro inesperado.'
+  });
 };
 
 // Middleware para capturar erros assíncronos não tratados
