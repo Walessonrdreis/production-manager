@@ -75,10 +75,10 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Conexão com o banco de dados estabelecida com sucesso.');
     
-    // Sincronizar modelos - Forçando recriação das tabelas
+    // Forçar recriação das tabelas
     console.log('Sincronizando modelos com o banco de dados...');
-    await sequelize.sync({ force: true }); // Isso vai dropar e recriar as tabelas
-    console.log('Modelos sincronizados com sucesso.');
+    await sequelize.sync({ force: true });
+    console.log('Tabelas recriadas com sucesso');
 
     // Iniciar o servidor
     const server = app.listen(PORT, () => {

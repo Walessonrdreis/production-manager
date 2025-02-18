@@ -1,29 +1,105 @@
-const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 class UserController {
+  constructor() {
+    // Vinculando os métodos ao contexto da classe
+    this.create = this.create.bind(this);
+    this.login = this.login.bind(this);
+    this.update = this.update.bind(this);
+    this.hashPassword = this.hashPassword.bind(this);
+    this.verifyPassword = this.verifyPassword.bind(this);
+  }
+
+  // Função auxiliar para criar hash da senha
+  hashPassword(password) {
+    try {
+      console.log('Tipo da senha recebida:', typeof password);
+      console.log('Valor da senha recebida:', password);
+      
+      if (!password || typeof password !== 'string') {
+        throw new Error('Senha inválida: deve ser uma string não vazia');
+      }
+
+      const passwordString = String(password).trim();
+      if (passwordString.length === 0) {
+        throw new Error('Senha inválida: string vazia após trim');
+      }
+
+      return crypto.createHash('sha256').update(passwordString).digest('hex');
+    } catch (error) {
+      console.error('Erro ao criar hash da senha:', error);
+      throw new Error(`Erro ao processar senha: ${error.message}`);
+    }
+  }
+
+  // Função auxiliar para verificar senha
+  verifyPassword(password, hashedPassword) {
+    try {
+      const hash = this.hashPassword(password);
+      return hash === hashedPassword;
+    } catch (error) {
+      console.error('Erro ao verificar senha:', error);
+      return false;
+    }
+  }
+
   // Criar um novo usuário
   async create(req, res) {
     try {
+      console.log('Recebendo requisição de criação de usuário:', {
+        ...req.body,
+        password: req.body.password ? '[PRESENTE]' : '[AUSENTE]'
+      });
       const { name, email, password, role } = req.body;
 
+      // Validações básicas
+      if (!password || typeof password !== 'string' || password.trim() === '') {
+        console.log('Senha inválida recebida');
+        return res.status(400).json({ error: 'Senha inválida' });
+      }
+
+      if (!email || typeof email !== 'string' || email.trim() === '') {
+        console.log('Email inválido recebido');
+        return res.status(400).json({ error: 'Email inválido' });
+      }
+
+      if (!name || typeof name !== 'string' || name.trim() === '') {
+        console.log('Nome inválido recebido');
+        return res.status(400).json({ error: 'Nome inválido' });
+      }
+
+      console.log('Tentando criar usuário:', { name, email, role });
+
       // Verificar se o usuário já existe
-      const userExists = await User.findOne({ where: { email } });
+      const userExists = await User.findOne({ 
+        where: { email: email.toLowerCase().trim() } 
+      });
+      
       if (userExists) {
+        console.log('Usuário já existe com este email:', email);
         return res.status(400).json({ error: 'Usuário já existe com este e-mail.' });
       }
 
-      // Criptografar a senha
-      const hashedPassword = await bcrypt.hash(password, 10);
+      // Criar hash da senha
+      console.log('Criando hash da senha...');
+      const hashedPassword = this.hashPassword(password.trim());
+      console.log('Hash criado com sucesso');
 
       // Criar o usuário
-      const user = await User.create({
-        name,
-        email,
+      console.log('Criando usuário no banco...');
+      const userData = {
+        name: name.trim(),
+        email: email.toLowerCase().trim(),
         password: hashedPassword,
-        role: role || 'user'
-      });
+        role: role || 'user',
+        active: true
+      };
+      console.log('Dados do usuário a ser criado:', { ...userData, password: '[REDACTED]' });
+
+      const user = await User.create(userData);
+      console.log('Usuário criado com sucesso. ID:', user.id);
 
       // Remover a senha do objeto de resposta
       const userResponse = user.toJSON();
@@ -31,7 +107,35 @@ class UserController {
 
       return res.status(201).json(userResponse);
     } catch (error) {
-      return res.status(500).json({ error: 'Erro ao criar usuário: ' + error.message });
+      console.error('Erro detalhado ao criar usuário:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      
+      if (error.name === 'SequelizeValidationError') {
+        const details = error.errors.map(err => ({
+          field: err.path,
+          message: err.message,
+          value: err.value
+        }));
+        console.error('Erro de validação:', details);
+        return res.status(400).json({ 
+          error: 'Dados inválidos',
+          details
+        });
+      }
+
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        return res.status(400).json({ 
+          error: 'E-mail já está em uso'
+        });
+      }
+
+      return res.status(500).json({ 
+        error: 'Erro interno ao criar usuário',
+        message: error.message
+      });
     }
   }
 
@@ -94,7 +198,7 @@ class UserController {
 
       // Se houver nova senha, criptografar
       if (password) {
-        updateData.password = await bcrypt.hash(password, 10);
+        updateData.password = this.hashPassword(password);
       }
 
       await user.update(updateData);
@@ -133,13 +237,13 @@ class UserController {
       const { email, password } = req.body;
 
       // Buscar usuário
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({ where: { email: email.toLowerCase() } });
       if (!user) {
         return res.status(401).json({ error: 'Credenciais inválidas.' });
       }
 
       // Verificar senha
-      const passwordMatch = await bcrypt.compare(password, user.password);
+      const passwordMatch = this.verifyPassword(password, user.password);
       if (!passwordMatch) {
         return res.status(401).json({ error: 'Credenciais inválidas.' });
       }
@@ -169,7 +273,8 @@ class UserController {
         token
       });
     } catch (error) {
-      return res.status(500).json({ error: 'Erro ao realizar login: ' + error.message });
+      console.error('Erro ao fazer login:', error);
+      return res.status(500).json({ error: 'Erro ao realizar login.' });
     }
   }
 }
