@@ -8,6 +8,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { HomePage } from './pages/HomePage';
 import { UserProfile } from './pages/UserProfile';
+import { DashboardPage } from './pages/DashboardPage';
 import { AuthProvider } from './contexts/AuthContext';
 import { PrivateRoute } from './routes/PrivateRoute';
 import { Layout } from './components/Layout';
@@ -28,7 +29,7 @@ function App() {
             <Route path="/dashboard" element={
               <PrivateRoute>
                 <Layout>
-                  <HomePage />
+                  <DashboardPage />
                 </Layout>
               </PrivateRoute>
             } />
@@ -76,7 +77,7 @@ function App() {
             } />
 
             {/* Rota de fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
