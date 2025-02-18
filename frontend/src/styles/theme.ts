@@ -1,7 +1,7 @@
 export const theme = {
   colors: {
-    primary: '#2F80ED',
-    secondary: '#56CCF2',
+    primary: '#6C5CE7',
+    secondary: '#FFFFFF',
     success: '#27AE60',
     error: '#EB5757',
     warning: '#F2C94C',
@@ -10,11 +10,15 @@ export const theme = {
     text: '#333333',
     textLight: '#666666',
     border: '#E0E0E0',
+    gradient: {
+      start: '#4B0082',
+      end: '#6A5ACD'
+    }
   },
   fonts: {
-    regular: 'Roboto, sans-serif',
-    medium: 'Roboto Medium, sans-serif',
-    bold: 'Roboto Bold, sans-serif',
+    regular: 'Inter, sans-serif',
+    medium: 'Inter Medium, sans-serif',
+    bold: 'Inter Bold, sans-serif',
   },
   breakpoints: {
     mobile: '320px',

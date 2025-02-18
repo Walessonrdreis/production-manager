@@ -1,5 +1,6 @@
 .index-page-container {
   animation: fadeIn 0.5s ease-in;
+  overflow: hidden;
 }
 
 .header-animation {
@@ -7,13 +8,68 @@
 }
 
 .content-animation {
-  animation: slideUp 0.8s ease-out;
+  animation: slideIn 0.8s ease-out;
+}
+
+.dashboard-animation {
+  animation: floatIn 1s ease-out;
+}
+
+.feature-card {
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.feature-card:nth-child(3n) {
+  animation-delay: 0.2s;
+}
+
+.feature-card:nth-child(3n + 1) {
+  animation-delay: 0.4s;
+}
+
+.testimonial-card {
+  animation: fadeInUp 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+.testimonial-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.testimonial-card:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.benefit-card {
+  animation: fadeInUp 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+.benefit-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.benefit-card:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.benefit-card:hover img {
+  transform: scale(1.05);
+}
+
+.benefit-card img {
+  transition: transform 0.3s ease;
 }
 
 /* Efeito de hover nos botões */
+.button-hover-effect {
+  transition: all 0.3s ease;
+}
+
 .button-hover-effect:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Animações */
@@ -28,7 +84,7 @@
 
 @keyframes slideDown {
   from {
-    transform: translateY(-20px);
+    transform: translateY(-50px);
     opacity: 0;
   }
   to {
@@ -37,31 +93,72 @@
   }
 }
 
-@keyframes slideUp {
+@keyframes slideIn {
   from {
-    transform: translateY(20px);
+    transform: translateX(-50px);
     opacity: 0;
   }
   to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes floatIn {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  100% {
     transform: translateY(0);
     opacity: 1;
   }
 }
 
-/* Estilos responsivos adicionais */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos responsivos */
 @media (max-width: 768px) {
   .index-page-container {
     padding: 16px;
   }
+
+  .content-animation {
+    animation: slideUp 0.8s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
 }
 
-/* Estilos de acessibilidade */
+/* Acessibilidade */
 @media (prefers-reduced-motion: reduce) {
   .index-page-container,
   .header-animation,
   .content-animation,
-  .button-hover-effect {
+  .dashboard-animation,
+  .button-hover-effect,
+  .feature-card,
+  .testimonial-card {
     animation: none;
     transform: none;
+    transition: none;
   }
 }
