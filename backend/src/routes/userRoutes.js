@@ -50,7 +50,7 @@ router.post('/register', validateUserData, UserController.create);
 router.use(authMiddleware);
 
 // Rotas do usuário (requerem autenticação)
-router.get('/profile', UserController.show); // Rota para o próprio perfil
+router.get('/profile', UserController.getProfile); // Rota para o próprio perfil
 router.put('/profile', validateUserData, UserController.update); // Atualizar próprio perfil
 
 // Rotas administrativas (requerem autenticação e privilégios de admin)

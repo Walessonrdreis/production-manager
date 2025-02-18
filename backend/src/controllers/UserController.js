@@ -277,6 +277,27 @@ class UserController {
       return res.status(500).json({ error: 'Erro ao realizar login.' });
     }
   }
+
+  // Obter perfil do usuário autenticado
+  async getProfile(req, res) {
+    try {
+      const user = await User.findByPk(req.userId, {
+        attributes: { exclude: ['password'] }
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: 'Usuário não encontrado.' });
+      }
+
+      return res.json(user);
+    } catch (error) {
+      console.error('Erro ao buscar perfil:', error);
+      return res.status(500).json({ 
+        error: 'Erro ao buscar perfil',
+        details: error.message 
+      });
+    }
+  }
 }
 
 module.exports = new UserController(); 

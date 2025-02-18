@@ -9,6 +9,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { HomePage } from './pages/HomePage';
 import { AuthProvider } from './contexts/AuthContext';
 import { PrivateRoute } from './routes/PrivateRoute';
+import { UserProfile } from './pages/UserProfile';
 
 function App() {
   return (
@@ -26,6 +27,11 @@ function App() {
             <Route path="/dashboard" element={
               <PrivateRoute>
                 <HomePage />
+              </PrivateRoute>
+            } />
+            <Route path="/profile" element={
+              <PrivateRoute>
+                <UserProfile />
               </PrivateRoute>
             } />
             <Route path="/products" element={
