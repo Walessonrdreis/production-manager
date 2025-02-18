@@ -1,14 +1,21 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { theme } from './styles/theme';
 import { GlobalStyle } from './styles/global';
-import { IndexPage } from './pages/IndexPage';
+import { IndexPage } from './pages/IndexPage/index';
+import { LoginPage } from './pages/LoginPage';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <IndexPage />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<IndexPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   );
 }

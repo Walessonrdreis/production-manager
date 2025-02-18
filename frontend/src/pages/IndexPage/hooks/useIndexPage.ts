@@ -1,19 +1,22 @@
 import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const useIndexPage = () => {
+  const navigate = useNavigate();
+
   const handleLogin = useCallback(() => {
-    console.log('Login');
-    // Implementar lógica de login
-  }, []);
+    navigate('/login');
+  }, [navigate]);
 
   const handleRegister = useCallback(() => {
-    console.log('Cadastro');
-    // Implementar lógica de cadastro
-  }, []);
+    navigate('/register');
+  }, [navigate]);
 
   const handleLearnMore = useCallback(() => {
-    console.log('Saiba mais');
-    // Implementar lógica de redirecionamento
+    const element = document.getElementById('features');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   }, []);
 
   return {
