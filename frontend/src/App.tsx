@@ -9,6 +9,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { HomePage } from './pages/HomePage';
 import { UserProfile } from './pages/UserProfile';
 import { DashboardPage } from './pages/DashboardPage';
+import { ProductPage } from './pages/ProductPage';
 import { AuthProvider } from './contexts/AuthContext';
 import { PrivateRoute } from './routes/PrivateRoute';
 import { Layout } from './components/Layout';
@@ -43,7 +44,7 @@ function App() {
             <Route path="/products" element={
               <PrivateRoute>
                 <Layout>
-                  <HomePage />
+                  <ProductPage />
                 </Layout>
               </PrivateRoute>
             } />

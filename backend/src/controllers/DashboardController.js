@@ -3,9 +3,13 @@ const User = require('../models/User');
 class DashboardController {
   async getMetrics(req, res) {
     try {
+      console.log('[Dashboard] Buscando métricas...');
+      
       // Buscar dados do banco
       const totalUsers = await User.count();
       const activeUsers = await User.count({ where: { active: true } });
+      
+      console.log('[Dashboard] Dados de usuários:', { totalUsers, activeUsers });
       
       // TODO: Implementar quando os outros modelos estiverem prontos
       const metrics = {
@@ -29,9 +33,10 @@ class DashboardController {
         }
       };
 
+      console.log('[Dashboard] Métricas preparadas:', metrics);
       return res.json(metrics);
     } catch (error) {
-      console.error('Erro ao buscar métricas:', error);
+      console.error('[Dashboard] Erro ao buscar métricas:', error);
       return res.status(500).json({ 
         error: 'Erro ao buscar métricas',
         details: error.message 
@@ -41,6 +46,8 @@ class DashboardController {
 
   async getRecentActivities(req, res) {
     try {
+      console.log('[Dashboard] Buscando atividades recentes...');
+      
       // TODO: Implementar quando os outros modelos estiverem prontos
       const activities = [
         {
@@ -53,9 +60,10 @@ class DashboardController {
         }
       ];
 
+      console.log('[Dashboard] Atividades encontradas:', activities.length);
       return res.json(activities);
     } catch (error) {
-      console.error('Erro ao buscar atividades:', error);
+      console.error('[Dashboard] Erro ao buscar atividades:', error);
       return res.status(500).json({ 
         error: 'Erro ao buscar atividades',
         details: error.message 
@@ -65,6 +73,8 @@ class DashboardController {
 
   async getChartData(req, res) {
     try {
+      console.log('[Dashboard] Buscando dados dos gráficos...');
+      
       // TODO: Implementar quando os outros modelos estiverem prontos
       const chartData = {
         sales: {
@@ -77,9 +87,10 @@ class DashboardController {
         }
       };
 
+      console.log('[Dashboard] Dados dos gráficos preparados');
       return res.json(chartData);
     } catch (error) {
-      console.error('Erro ao buscar dados dos gráficos:', error);
+      console.error('[Dashboard] Erro ao buscar dados dos gráficos:', error);
       return res.status(500).json({ 
         error: 'Erro ao buscar dados dos gráficos',
         details: error.message 
