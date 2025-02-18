@@ -1,0 +1,14 @@
+.position-toggle {
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  background-color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.position-toggle:hover {
+  background-color: #f5f3ff;
+  border-color: #6366f1;
+} 
